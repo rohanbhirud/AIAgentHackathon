@@ -1,7 +1,7 @@
 import subprocess
 import os
 import sys
-import time
+from taigaApi.project_manager import ProjectManager
 
 def create_superuser_direct(username, email, password):
     """Create a superuser for Taiga using Django's management command"""
@@ -40,90 +40,33 @@ def create_superuser_direct(username, email, password):
         print(f"\n❌ Exception occurred creating superuser: {e}")
         return False
 
-def start_docker_compose():
-    """Start the Docker Compose services"""
+def create_default_project(taiga_api):
+    """Create a default project for Requirement Analyzer"""
     try:
-        print("Starting Docker Compose services...")
+        project_manager = ProjectManager(taiga_api)
         
-        # Execute docker-compose up -d to start services in the background
-        result = subprocess.run(
-            "docker-compose up -d",
-            shell=True,
-            capture_output=True,
-            text=True
+        # Create the default project
+        project = project_manager.create_project(
+            name="Requirement Analyzer",
+            description="Requirement analyzer project"
         )
         
-        # Print output
-        if result.stdout:
-            print("\n----- DOCKER COMPOSE OUTPUT -----")
-            print(result.stdout.strip())
-        
-        # Print errors
-        if result.stderr:
-            print("\n----- DOCKER COMPOSE ERRORS -----")
-            print(result.stderr.strip())
-        
-        # Check result
-        if result.returncode == 0:
-            print("\n✅ Docker Compose services started successfully!")
+        if project:
+            print(f"\n✅ Default project 'Requirement Analyzer' created successfully!")
             return True
         else:
-            print(f"\n❌ Docker Compose failed with return code: {result.returncode}")
+            print("\n❌ Default project creation failed")
             return False
             
     except Exception as e:
-        print(f"\n❌ Exception occurred starting Docker Compose: {e}")
+        print(f"\n❌ Exception occurred creating default project: {e}")
         return False
-
-def wait_for_services_ready(max_attempts=30, delay=5):
-    """Wait for services to be ready before creating superuser"""
-    print(f"\nWaiting for services to be ready (max {max_attempts} attempts, {delay}s delay)...")
     
-    for attempt in range(1, max_attempts + 1):
-        try:
-            print(f"Attempt {attempt}/{max_attempts}: Checking if taiga-back is ready...")
-            
-            # Execute a simple command to check if the service is running
-            # Using double quotes for the docker command and single quotes for the Python string
-            result = subprocess.run(
-                'docker exec -i taiga-back python -c "print(\'Service is running\')"',
-                shell=True,
-                capture_output=True,
-                text=True
-            )
-            
-            if result.returncode == 0 and "Service is running" in result.stdout:
-                print("✅ Services appear to be ready!")
-                return True
-                
-        except Exception as e:
-            print(f"Error checking service: {e}")
-        
-        print(f"Services not ready yet, waiting {delay} seconds...")
-        time.sleep(delay)
-    
-    print("❌ Maximum attempts reached. Services may not be fully initialized.")
-    return False
-
 def initialize_system():
-    """Initialize the entire system: start Docker Compose, wait for services, create superuser"""
-    
-    # Start Docker Compose services
-    if not start_docker_compose():
-        print("Failed to start Docker Compose services. Exiting.")
-        return False
-    
-    # Wait for services to be ready
-    if not wait_for_services_ready():
-        print("Services did not become ready in the allowed time. Superuser creation may fail.")
-        proceed = input("Do you want to try creating the superuser anyway? (y/n): ")
-        if proceed.lower() != 'y':
-            return False
-    
     # Create superuser
-    username = "admin"
-    email = "admin@example.com"
-    password = "adminpassword"
+    username = os.getenv("TAIGA_USERNAME", "admin")
+    email = os.getenv("TAIGA_MAIL" , "admin@example.com")
+    password = os.getenv("TAIGA_PASSWORD", "adminpassword")
     
     # Allow command-line arguments to override defaults
     if len(sys.argv) > 1:
@@ -133,8 +76,20 @@ def initialize_system():
     if len(sys.argv) > 3:
         password = sys.argv[3]
     
-    print(f"\nCreating superuser '{username}' with email '{email}'...")
-    return create_superuser_direct(username, email, password)
+    superuser_created = create_superuser_direct(username, email, password)
+    
+    # If the Taiga API is available, try to create the default project
+    if True:
+        print("\nCreating default project...")
+        from taigaApi.taiga_api import TaigaAPI  # Import here to avoid circular imports
+        
+        # Initialize TaigaAPI with the superuser credentials
+        taiga_api = TaigaAPI(username=username, password=password)
+        if taiga_api.authenticate():
+            project_created = create_default_project(taiga_api)
+            return superuser_created and project_created
+    
+    return superuser_created
 
 if __name__ == "__main__":
     print("=== SYSTEM INITIALIZATION ===")
