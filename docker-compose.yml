@@ -1,0 +1,95 @@
+services:
+  taiga-db:
+    image: postgres:13
+    container_name: taiga-db
+    environment:
+      POSTGRES_DB: taiga
+      POSTGRES_USER: taiga
+      POSTGRES_PASSWORD: taigapassword
+    volumes:
+      - taiga-db-data:/var/lib/postgresql/data
+    networks:
+      - taiga-network
+    restart: unless-stopped
+
+  taiga-rabbit:
+    image: rabbitmq:3-management
+    container_name: taiga-rabbit
+    environment:
+      RABBITMQ_DEFAULT_USER: taiga
+      RABBITMQ_DEFAULT_PASS: taigapassword
+    networks:
+      - taiga-network
+    restart: unless-stopped
+
+  taiga-back:
+    image: taigaio/taiga-back:latest
+    container_name: taiga-back
+    ports:
+      - "8080:8000"
+    environment:
+      POSTGRES_DB: taiga
+      POSTGRES_USER: taiga
+      POSTGRES_PASSWORD: taigapassword
+      POSTGRES_HOST: taiga-db
+      # RabbitMQ settings
+      RABBITMQ_USER: taiga
+      RABBITMQ_PASS: taigapassword
+      RABBITMQ_HOST: taiga-rabbit
+      RABBITMQ_PORT: 5672
+      # Taiga settings
+      TAIGA_SECRET_KEY: "taiga-back-secret-key"
+      TAIGA_SITES_SCHEME: http
+      TAIGA_SITES_DOMAIN: localhost:8888
+      TAIGA_SUBPATH: ""
+      EMAIL_BACKEND: "console"
+      # Set Celery broker URL explicitly
+      CELERY_BROKER_URL: "amqp://taiga:taigapassword@taiga-rabbit:5672//"
+    volumes:
+      - taiga-back-media:/taiga-back/media
+      - taiga-back-static:/taiga-back/static
+    networks:
+      - taiga-network
+    depends_on:
+      - taiga-db
+      - taiga-rabbit
+    restart: unless-stopped
+
+  # Adding the frontend
+  taiga-front:
+    image: taigaio/taiga-front:latest
+    container_name: taiga-front
+    environment:
+      TAIGA_URL: "http://localhost:8888"
+      TAIGA_WEBSOCKETS_URL: "ws://localhost:8888/events"
+      TAIGA_SUBPATH: ""
+    networks:
+      - taiga-network
+    depends_on:
+      - taiga-back
+    restart: unless-stopped
+
+  # Adding the gateway (nginx) to serve both front and back
+  taiga-gateway:
+    image: nginx:alpine
+    container_name: taiga-gateway
+    ports:
+      - "8888:80"  # Changed from 9000 to 8888
+    volumes:
+      - ./taiga-nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - taiga-back-media:/taiga-media
+      - taiga-back-static:/taiga-static
+    networks:
+      - taiga-network
+    depends_on:
+      - taiga-front
+      - taiga-back
+    restart: unless-stopped
+
+networks:
+  taiga-network:
+
+volumes:
+  taiga-db-data:
+  taiga-back-media:
+  taiga-back-static:
