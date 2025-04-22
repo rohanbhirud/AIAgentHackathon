@@ -1,0 +1,126 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "list_epics",
+            "description": "List all epics in the default project (ID: 1)",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_epic",
+            "description": "Create a new epic in the default project (ID: 1)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "subject": {
+                        "type": "string",
+                        "description": "The title of the epic"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed description of the epic"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "List of tags to associate with the epic"
+                    }
+                },
+                "required": ["subject"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "update_epic",
+            "description": "Update an existing epic",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "epic_id": {
+                        "type": "string",
+                        "description": "The ID of the epic to update"
+                    },
+                    "updates": {
+                        "type": "object",
+                        "description": "Fields to update (subject, description, etc.)"
+                    }
+                },
+                "required": ["epic_id", "updates"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_user_stories",
+            "description": "List user stories for the default project (ID: 1), optionally filtered by epic",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "epic_id": {
+                        "type": "string",
+                        "description": "Optional epic ID to filter stories"
+                    }
+                },
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_user_story",
+            "description": "Create a new user story in the default project (ID: 1)",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "subject": {
+                        "type": "string",
+                        "description": "The title of the user story"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed description of the user story"
+                    },
+                    "epic_id": {
+                        "type": "string",
+                        "description": "Optional epic ID to link the story to"
+                    }
+                },
+                "required": ["subject"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "update_user_story",
+            "description": "Update an existing user story",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "story_id": {
+                        "type": "string",
+                        "description": "The ID of the user story to update"
+                    },
+                    "updates": {
+                        "type": "object",
+                        "description": "Fields to update (subject, description, etc.)"
+                    }
+                },
+                "required": ["story_id", "updates"]
+            }
+        }
+    }
+]
