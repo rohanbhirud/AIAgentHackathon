@@ -19,15 +19,12 @@ def list_epics(taiga_api, epic_manager):
         epics = epic_manager.get_epics(DEFAULT_PROJECT_ID)
         if epics is None:
             return json.dumps({"status": "error", "message": "Error retrieving epics for default project"})
-            
-        # Extract relevant information for each epic
+
         formatted_epics = []
         for epic in epics:
             formatted_epics.append({
                 "id": epic.get("id"),
-                "subject": epic.get("subject"),
-                "description": epic.get("description", "").replace("<p>", "").replace("</p>", "")[:100] + "..." if epic.get("description") else "",
-                "status": epic.get("status_extra_info", {}).get("name", "Unknown")
+                "subject": epic.get("subject")
             })
             
         return json.dumps({

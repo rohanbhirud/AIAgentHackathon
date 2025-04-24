@@ -83,7 +83,7 @@ class EpicManager:
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
-        
+        print(f"Creating epic '{subject}' description {description}...")
         try:
             url = f"{self.taiga.api_url}/epics"
             
