@@ -13,21 +13,14 @@ This application uses Taiga (an open-source project management tool) with AI int
 For the first time setup, you need to initialize the system which will:
 1. Start all required Docker containers
 2. Wait for the services to be ready
-3. Create an admin user for Taiga
 
-Run the initialization script:
+Run the initialization script(It will the create admin user and a default):
 
 ```bash
 python init.py
 ```
 
-You can optionally provide custom admin credentials:
-
-```bash
-python init.py <username> <email> <password>
-```
-
-If not provided, the default credentials will be:
+The default credentials will be:
 - Username: admin
 - Email: admin@example.com
 - Password: adminpassword
@@ -42,11 +35,11 @@ For subsequent launches, you can simply start the Docker containers:
 docker-compose up -d
 ```
 
-## Accessing the Taiga Application
+To start the agent(It will start in terminal):
 
-Once running, the application will be available at:
-- Main interface: http://localhost:8888
-- Backend API: http://localhost:8080
+```bash
+python taiga_ai_agent.py
+```
 
 ## Stopping the Application
 
