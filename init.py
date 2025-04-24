@@ -1,13 +1,18 @@
 import subprocess
 import os
 import sys
+from taigaApi import taiga_api
 from taigaApi.project_manager import ProjectManager
 
 def create_superuser_direct(username, email, password):
     """Create a superuser for Taiga using Django's management command"""
     try:
         print(f"Creating superuser with username: {username}, email: {email}")
-        
+        taigaApi = taiga_api.TaigaAPI("admin", "adminpassword")
+        isUser = taigaApi.authenticate()
+        if isUser:
+            print("User already present with Taiga API")
+            return True
         # Use proper shell quoting to avoid syntax errors
         create_cmd = f"""docker exec -i taiga-back bash -c "DJANGO_SUPERUSER_USERNAME='{username}' DJANGO_SUPERUSER_EMAIL='{email}' DJANGO_SUPERUSER_PASSWORD='{password}' python manage.py createsuperuser --noinput" """
         
@@ -44,8 +49,10 @@ def create_default_project(taiga_api):
     """Create a default project for Requirement Analyzer"""
     try:
         project_manager = ProjectManager(taiga_api)
-        
-        # Create the default project
+        projects = project_manager.get_projects()
+        if(projects and len(projects) > 0):
+            print("\nDefault project already exists. Skipping creation.")
+            return True
         project = project_manager.create_project(
             name="Requirement Analyzer",
             description="Requirement analyzer project"
@@ -79,15 +86,14 @@ def initialize_system():
     superuser_created = create_superuser_direct(username, email, password)
     
     # If the Taiga API is available, try to create the default project
-    if True:
+    if superuser_created:
         print("\nCreating default project...")
         from taigaApi.taiga_api import TaigaAPI  # Import here to avoid circular imports
         
         # Initialize TaigaAPI with the superuser credentials
         taiga_api = TaigaAPI(username=username, password=password)
-        if taiga_api.authenticate():
-            project_created = create_default_project(taiga_api)
-            return superuser_created and project_created
+        project_created = create_default_project(taiga_api)
+        return superuser_created and project_created
     
     return superuser_created
 

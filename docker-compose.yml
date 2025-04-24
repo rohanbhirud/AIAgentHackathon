@@ -47,10 +47,6 @@ services:
       # Set Celery broker URL explicitly
       CELERY_BROKER_URL: "amqp://taiga:taigapassword@taiga-rabbit:5672//"
       CELERY_ENABLED: "True"
-      CELERY_RESULT_BACKEND: "django-db"
-      # Add healthcheck timeout settings
-      BROKER_CONNECTION_TIMEOUT: 30
-      BROKER_HEARTBEAT: 10
     volumes:
       - taiga-back-media:/taiga-back/media
       - taiga-back-static:/taiga-back/static
