@@ -124,35 +124,15 @@ class UserStoryManager:
                 return False
         
         try:
-            # First, get the current story to check if it's already linked
-            url = f"{self.taiga.api_url}/userstories/{user_story_id}"
-            response = requests.get(url, headers=self.taiga.get_headers())
-            response.raise_for_status()
-            story = response.json()
-            
-            # Check if already linked
-            already_linked = False
-            current_epics = story.get("epics", [])
-            for epic in current_epics:
-                if epic.get("id") == epic_id:
-                    already_linked = True
-                    break
-            
-            if already_linked:
-                print(f"✅ User story {user_story_id} is already linked to epic {epic_id}")
-                return True
-            
-            # Add the new epic link
-            current_epics.append({"id": epic_id})
-            
-            # Update the story with the new epic links
-            update_url = f"{self.taiga.api_url}/userstories/{user_story_id}"
+            # Use the dedicated endpoint for linking user stories to epics
+            url = f"{self.taiga.api_url}/epics/{epic_id}/related_userstories"
             
             payload = {
-                "epics": current_epics
+                "epic": epic_id,
+                "user_story": user_story_id
             }
             
-            response = requests.patch(update_url, headers=self.taiga.get_headers(), json=payload)
+            response = requests.post(url, headers=self.taiga.get_headers(), json=payload)
             response.raise_for_status()
             print(f"✅ Linked user story {user_story_id} to epic {epic_id}")
             return True

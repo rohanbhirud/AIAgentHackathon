@@ -122,5 +122,93 @@
                 "required": ["story_id", "updates"]
             }
         }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_projects",
+            "description": "List all projects available to the user",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_project",
+            "description": "Get details for a specific project",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_id": {
+                        "type": "string",
+                        "description": "The ID of the project to retrieve"
+                    }
+                },
+                "required": ["project_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "create_project",
+            "description": "Create a new project",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the project"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Detailed description of the project"
+                    }
+                },
+                "required": ["name"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "breakdown_epic",
+            "description": "Break down an epic into user stories using AI",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "epic_id": {
+                        "type": "string",
+                        "description": "The ID of the epic to break down"
+                    }
+                },
+                "required": ["epic_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "link_user_story_to_epic",
+            "description": "Link a user story to an epic",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_story_id": {
+                        "type": "string",
+                        "description": "The ID of the user story"
+                    },
+                    "epic_id": {
+                        "type": "string",
+                        "description": "The ID of the epic"
+                    }
+                },
+                "required": ["user_story_id", "epic_id"]
+            }
+        }
     }
 ]

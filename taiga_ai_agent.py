@@ -5,6 +5,8 @@ from azure_ai_client import AzureAIClient
 from taigaApi.taiga_api import TaigaAPI
 from taigaApi.epic_manager import EpicManager
 from taigaApi.user_story_manager import UserStoryManager
+from taigaApi.project_manager import ProjectManager
+from taigaApi.story_generator import StoryGenerator
 import taiga_functions
 
 # Load environment variables
@@ -27,6 +29,8 @@ class TaigaAIAgent:
         # Initialize Taiga managers
         self.epic_manager = EpicManager(self.taiga_api)
         self.user_story_manager = UserStoryManager(self.taiga_api)
+        self.project_manager = ProjectManager(self.taiga_api)
+        self.story_generator = StoryGenerator(self.taiga_api, self.ai_client)
         
         # Load tools definition
         self.tools = self._load_tools()
@@ -120,6 +124,40 @@ class TaigaAIAgent:
                             self.user_story_manager,
                             function_args.get("story_id"),
                             function_args.get("updates")
+                        )
+                    # Project management functions
+                    elif function_name == "list_projects":
+                        function_response = taiga_functions.list_projects(
+                            self.taiga_api,
+                            self.project_manager
+                        )
+                    elif function_name == "get_project":
+                        function_response = taiga_functions.get_project(
+                            self.taiga_api,
+                            self.project_manager,
+                            function_args.get("project_id")
+                        )
+                    elif function_name == "create_project":
+                        function_response = taiga_functions.create_project(
+                            self.taiga_api,
+                            self.project_manager,
+                            function_args.get("name"),
+                            function_args.get("description")
+                        )
+                    # Story generation functions
+                    elif function_name == "breakdown_epic":
+                        function_response = taiga_functions.breakdown_epic(
+                            self.taiga_api,
+                            self.story_generator,
+                            function_args.get("project_id"),
+                            function_args.get("epic_id")
+                        )
+                    elif function_name == "link_user_story_to_epic":
+                        function_response = taiga_functions.link_user_story_to_epic(
+                            self.taiga_api,
+                            self.user_story_manager,
+                            function_args.get("user_story_id"),
+                            function_args.get("epic_id")
                         )
                     
                     # Add function response to messages
