@@ -10,20 +10,8 @@ This application uses Taiga (an open-source project management tool) with AI int
 
 ## First-Time Launch
 
-For the first time setup, you need to initialize the system which will:
-1. Start all required Docker containers
-2. Wait for the services to be ready
+For the first time setup, you need to run docker for taiga. Check Readme.md from taiga-docker folder
 
-Run the initialization script(It will the create admin user and a default):
-
-```bash
-python init.py
-```
-
-The default credentials will be:
-- Username: admin
-- Email: admin@example.com
-- Password: adminpassword
 
 The initialization process may take a few minutes as it sets up all the necessary containers.
 
