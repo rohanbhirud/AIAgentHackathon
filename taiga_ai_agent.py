@@ -62,40 +62,49 @@ class TaigaAIAgent:
         # Initial message history
         messages = [{"role": "user", "content": user_input}]
         
-        # First API call: Ask the model to use the functions
-        try:
-            response = self.ai_client.client.chat.completions.create(
-                model=self.ai_client.deployment,
-                messages=messages,
-                tools=self.tools,
-                tool_choice="auto",
-            )
-            
-            # Process the model's response
-            response_message = response.choices[0].message
-            messages.append(response_message)
-            
-            # Check if the model wants to call functions
-            if response_message.tool_calls:
+        # Continue the conversation until all tool calls are processed
+        while True:
+            try:
+                response = self.ai_client.client.chat.completions.create(
+                    model=self.ai_client.deployment,
+                    messages=messages,
+                    tools=self.tools,
+                    tool_choice="auto",
+                )
+                
+                # Process the model's response
+                response_message = response.choices[0].message
+                messages.append(response_message)
+                
+                # Check if the model wants to call functions
+                if not response_message.tool_calls:
+                    # No more tool calls - return final response
+                    return response_message.content
+                    
+                # Process tool calls
                 for tool_call in response_message.tool_calls:
                     function_name = tool_call.function.name
                     function_args = json.loads(tool_call.function.arguments)
                     
                     # Call the appropriate function
                     function_response = None
+                    # print(f"Calling function: {function_name} with args: {function_args}")
                     
                     if function_name == "list_epics":
                         function_response = taiga_functions.list_epics(
                             self.taiga_api, 
-                            self.epic_manager
+                            self.epic_manager,
+                            function_args.get("project_id")  
                         )
                     elif function_name == "create_epic":
                         function_response = taiga_functions.create_epic(
                             self.taiga_api,
                             self.epic_manager,
                             function_args.get("subject"),
-                            function_args.get("description"),
-                            function_args.get("tags")
+                            function_args.get("project_id"),
+                            function_args.get("description", ""),  # Default to empty string if not provided
+                            function_args.get("tags", [])  # Default to empty list if not provided
+                             
                         )
                     elif function_name == "update_epic":
                         function_response = taiga_functions.update_epic(
@@ -108,15 +117,17 @@ class TaigaAIAgent:
                         function_response = taiga_functions.list_user_stories(
                             self.taiga_api,
                             self.user_story_manager,
-                            function_args.get("epic_id")
+                            function_args.get("epic_id", None),  # Default to None if not provided
+                            function_args.get("project_id")  
                         )
                     elif function_name == "create_user_story":
                         function_response = taiga_functions.create_user_story(
                             self.taiga_api,
                             self.user_story_manager,
                             function_args.get("subject"),
-                            function_args.get("description"),
-                            function_args.get("epic_id")
+                            function_args.get("description", ""),  # Default to empty string if not provided
+                            function_args.get("epic_id", None),  # Default to None if not provided
+                            function_args.get("project_id")  
                         )
                     elif function_name == "update_user_story":
                         function_response = taiga_functions.update_user_story(
@@ -142,14 +153,14 @@ class TaigaAIAgent:
                             self.taiga_api,
                             self.project_manager,
                             function_args.get("name"),
-                            function_args.get("description")
+                            function_args.get("description", "")  # Default to empty string if not provided
                         )
                     # Story generation functions
                     elif function_name == "breakdown_epic":
                         function_response = taiga_functions.breakdown_epic(
                             self.taiga_api,
                             self.story_generator,
-                            function_args.get("project_id"),
+                            function_args.get("project_id"),  
                             function_args.get("epic_id")
                         )
                     elif function_name == "link_user_story_to_epic":
@@ -159,7 +170,6 @@ class TaigaAIAgent:
                             function_args.get("user_story_id"),
                             function_args.get("epic_id")
                         )
-                    
                     # Add function response to messages
                     messages.append({
                         "tool_call_id": tool_call.id,
@@ -167,17 +177,9 @@ class TaigaAIAgent:
                         "name": function_name,
                         "content": function_response
                     })
-            
-            # Get the final response from the model
-            final_response = self.ai_client.client.chat.completions.create(
-                model=self.ai_client.deployment,
-                messages=messages,
-            )
-            
-            return final_response.choices[0].message.content
-            
-        except Exception as e:
-            return f"Error: {str(e)}"
+                
+            except Exception as e:
+                return f"Error: {str(e)}"
     
     def start_interactive_session(self):
         """Start an interactive session with the AI agent"""

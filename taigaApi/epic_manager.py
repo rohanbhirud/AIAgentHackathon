@@ -29,7 +29,10 @@ class EpicManager:
                 return None
         
         try:
-            url = f"{self.taiga.api_url}/epics?project={project_id}"
+            if project_id is None:
+                url = f"{self.taiga.api_url}/epics"
+            else:
+                url =  f"{self.taiga.api_url}/epics?project={project_id}"
             response = requests.get(url, headers=self.taiga.get_headers())
             response.raise_for_status()
             epics = response.json()
@@ -83,7 +86,6 @@ class EpicManager:
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
-        print(f"Creating epic '{subject}' description {description}...")
         try:
             url = f"{self.taiga.api_url}/epics"
             

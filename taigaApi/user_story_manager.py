@@ -14,7 +14,7 @@ class UserStoryManager:
         """
         self.taiga = taiga_api
     
-    def get_user_stories(self, project_id, epic_id=None):
+    def get_user_stories(self, epic_id=None):
         """
         Get user stories for a project, optionally filtered by epic
         
@@ -30,7 +30,7 @@ class UserStoryManager:
                 return None
         
         try:
-            url = f"{self.taiga.api_url}/userstories?project={project_id}"
+            url = f"{self.taiga.api_url}/userstories"
             
             if epic_id:
                 url = f"{url}&epic={epic_id}"
@@ -50,7 +50,7 @@ class UserStoryManager:
             print(f"❌ Failed to get user stories: {e}")
             return None
     
-    def create_user_story(self, project_id, subject, description=None, epic_id=None, 
+    def create_user_story(self, subject, description=None, epic_id=None, 
                           assigned_to=None, tags=None, status=None, points=None):
         """
         Create a new user story in a project

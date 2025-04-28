@@ -3,10 +3,15 @@
         "type": "function",
         "function": {
             "name": "list_epics",
-            "description": "List all epics in the default project (ID: 1)",
+            "description": "List all epics in a project",
             "parameters": {
                 "type": "object",
-                "properties": {},
+                "properties": {
+                    "project_id": {
+                        "type": "string",
+                        "description": "The ID of the project"
+                    }
+                },
                 "required": []
             }
         }
@@ -15,7 +20,7 @@
         "type": "function",
         "function": {
             "name": "create_epic",
-            "description": "Create a new epic in the default project (ID: 1)",
+            "description": "Create a new epic in a project",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -33,6 +38,10 @@
                             "type": "string"
                         },
                         "description": "List of tags to associate with the epic"
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "description": "The ID of the project"
                     }
                 },
                 "required": ["subject"]
@@ -64,14 +73,10 @@
         "type": "function",
         "function": {
             "name": "list_user_stories",
-            "description": "List user stories for the default project (ID: 1), optionally filtered by epic",
+            "description": "List user stories for a project, optionally filtered by epic",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "epic_id": {
-                        "type": "string",
-                        "description": "Optional epic ID to filter stories"
-                    }
                 },
                 "required": []
             }
@@ -81,7 +86,7 @@
         "type": "function",
         "function": {
             "name": "create_user_story",
-            "description": "Create a new user story in the default project (ID: 1)",
+            "description": "Create a new user story in a project",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -169,7 +174,7 @@
                         "description": "Detailed description of the project"
                     }
                 },
-                "required": ["name"]
+                "required": ["name","description"]
             }
         }
     },
@@ -184,6 +189,10 @@
                     "epic_id": {
                         "type": "string",
                         "description": "The ID of the epic to break down"
+                    },
+                    "project_id": {
+                        "type": "string",
+                        "description": "The ID of the project"
                     }
                 },
                 "required": ["epic_id"]

@@ -1,24 +1,22 @@
 import json
 import requests
 
-# Default project ID to use for all operations
-DEFAULT_PROJECT_ID = 1
-
-def list_epics(taiga_api, epic_manager):
+def list_epics(taiga_api, epic_manager, project_id):
     """
-    List epics for the default project (ID: 1)
+    List epics for a project
     
     Args:
         taiga_api: The TaigaAPI instance
         epic_manager: The EpicManager instance
+        project_id: The ID of the project
         
     Returns:
         JSON string with epic details
     """
     try:
-        epics = epic_manager.get_epics(DEFAULT_PROJECT_ID)
+        epics = epic_manager.get_epics(project_id)
         if epics is None:
-            return json.dumps({"status": "error", "message": "Error retrieving epics for default project"})
+            return json.dumps({"status": "error", "message": f"Error retrieving epics for project {project_id}"})
 
         formatted_epics = []
         for epic in epics:
@@ -36,9 +34,9 @@ def list_epics(taiga_api, epic_manager):
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
 
-def create_epic(taiga_api, epic_manager, subject, description=None, tags=None):
+def create_epic(taiga_api, epic_manager, subject, project_id, description=None, tags=None):
     """
-    Create a new epic in the default project (ID: 1)
+    Create a new epic in a project
     
     Args:
         taiga_api: The TaigaAPI instance
@@ -46,6 +44,7 @@ def create_epic(taiga_api, epic_manager, subject, description=None, tags=None):
         subject: The title of the epic
         description: Optional description
         tags: Optional list of tags
+        project_id: The ID of the project
         
     Returns:
         JSON string with the created epic details
@@ -53,7 +52,7 @@ def create_epic(taiga_api, epic_manager, subject, description=None, tags=None):
     try:
         # Create the epic
         epic = epic_manager.create_epic(
-            project_id=DEFAULT_PROJECT_ID,
+            project_id=project_id,
             subject=subject,
             description=description,
             tags=tags
@@ -111,12 +110,13 @@ def update_epic(taiga_api, epic_manager, epic_id, updates):
 
 def list_user_stories(taiga_api, user_story_manager, epic_id=None):
     """
-    List user stories for the default project (ID: 1), optionally filtered by epic
+    List user stories for a project, optionally filtered by epic
     
     Args:
         taiga_api: The TaigaAPI instance
         user_story_manager: The UserStoryManager instance
         epic_id: Optional epic ID to filter stories
+        project_id: The ID of the project
         
     Returns:
         JSON string with user story details
@@ -126,7 +126,7 @@ def list_user_stories(taiga_api, user_story_manager, epic_id=None):
         epic_id = int(epic_id) if epic_id else None
         
         # Get user stories
-        stories = user_story_manager.get_user_stories(DEFAULT_PROJECT_ID, epic_id)
+        stories = user_story_manager.get_user_stories(epic_id)
         
         if stories is None:
             return json.dumps({"status": "error", "message": "Error retrieving user stories"})
@@ -152,7 +152,7 @@ def list_user_stories(taiga_api, user_story_manager, epic_id=None):
 
 def create_user_story(taiga_api, user_story_manager, subject, description=None, epic_id=None):
     """
-    Create a new user story in the default project (ID: 1)
+    Create a new user story in a project
     
     Args:
         taiga_api: The TaigaAPI instance
@@ -160,6 +160,7 @@ def create_user_story(taiga_api, user_story_manager, subject, description=None, 
         subject: The title of the user story
         description: Optional description
         epic_id: Optional epic ID to link the story to
+        project_id: The ID of the project
         
     Returns:
         JSON string with the created user story details
@@ -170,7 +171,6 @@ def create_user_story(taiga_api, user_story_manager, subject, description=None, 
         
         # Create the user story
         story = user_story_manager.create_user_story(
-            project_id=DEFAULT_PROJECT_ID,
             subject=subject,
             description=description,
             epic_id=epic_id
@@ -331,22 +331,22 @@ def create_project(taiga_api, project_manager, name, description=None):
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
 
-def breakdown_epic(taiga_api, story_generator, project_id, epic_id):
+def breakdown_epic(taiga_api, story_generator, epic_id, project_id):
     """
     Break down an epic into user stories using AI
     
     Args:
         taiga_api: The TaigaAPI instance
         story_generator: The StoryGenerator instance
-        project_id: The ID of the project
         epic_id: The ID of the epic to break down
+        project_id: The ID of the project
         
     Returns:
         JSON string with the created user stories
     """
     try:
         # Convert IDs to integers
-        project_id = DEFAULT_PROJECT_ID
+        project_id = int(project_id)
         epic_id = int(epic_id)
         
         # Generate user stories from the epic

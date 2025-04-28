@@ -1,4 +1,4 @@
 /.env
 __pycache__/
-taigaApi/__pycache__/
 .vscode/
+/taigaApi/__pycache__/
