@@ -112,7 +112,8 @@ class TaigaAIAgent:
                         )
                     elif function_name == "list_user_stories":
                         function_response = taiga_functions.list_user_stories(
-                            self.user_story_manager
+                            self.user_story_manager,
+                            function_args.get("epics_id")
                         )
                     elif function_name == "create_user_story":
                         function_response = taiga_functions.create_user_story(

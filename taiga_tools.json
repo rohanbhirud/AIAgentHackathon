@@ -77,6 +77,10 @@
             "parameters": {
                 "type": "object",
                 "properties": {
+                    "epic_id": {
+                        "type": "string",
+                        "description": "Optional epic ID to filter user stories"
+                    }
                 },
                 "required": []
             }

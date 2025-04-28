@@ -67,9 +67,9 @@ def update_epic(epic_manager, epic_id, updates):
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
 
-def list_user_stories(user_story_manager):
+def list_user_stories(user_story_manager, epic_id=None):
     try:
-        stories = user_story_manager.get_user_stories()
+        stories = user_story_manager.get_user_stories(epic_id)
         
         if stories is None:
             return json.dumps({"status": "error", "message": "Error retrieving user stories"})

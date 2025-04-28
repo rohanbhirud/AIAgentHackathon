@@ -4,13 +4,15 @@ class UserStoryManager:
     def __init__(self, taiga_api):
         self.taiga = taiga_api
     
-    def get_user_stories(self):
+    def get_user_stories(self, epic_id=None):
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
         
         try:
-            url = f"{self.taiga.api_url}/userstories"  
+            url = f"{self.taiga.api_url}/userstories" 
+            if epic_id is not None:
+                url = f"{self.taiga.api_url}/epics/{epic_id}/related_userstories"
             response = requests.get(url, headers=self.taiga.get_headers())
             response.raise_for_status()
             stories = response.json()
