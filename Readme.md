@@ -10,7 +10,7 @@ This application uses Taiga (an open-source project management tool) with AI int
 
 ## First-Time Launch
 
-For the first time setup, you need to run docker for taiga. Check Readme.md from taiga-docker folder
+For the first-time setup, you need to run Docker for Taiga. Check [Readme.md from taiga-docker folder](../taiga-docker/Readme.md).
 
 
 The initialization process may take a few minutes as it sets up all the necessary containers.
