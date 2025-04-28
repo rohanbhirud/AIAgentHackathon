@@ -33,7 +33,7 @@ AZURE_OPENAI_DEPLOYMENT=
 To start the agent(It will start in terminal):
 
 ```bash
-python taiga_ai_agent.py
+python requirement_analyzer_agent.py
 ```
 
 ## Stopping the Application
