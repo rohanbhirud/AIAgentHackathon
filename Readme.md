@@ -23,10 +23,12 @@ For subsequent launches, you can simply start the Docker containers:
 docker-compose up -d
 ```
 Add below environment variables in .env file
+```txt
 AZURE_OPENAI_API_KEY=
 AZURE_OPENAI_ENDPOINT=
 AZURE_OPENAI_API_VERSION=
 AZURE_OPENAI_DEPLOYMENT=
+```
 
 To start the agent(It will start in terminal):
 
