@@ -12,7 +12,7 @@ import taiga_functions
 # Load environment variables
 load_dotenv()
 
-class TaigaAIAgent:
+class RequirementAnalyzerAgent:
     """AI Agent for creating and managing Taiga project artifacts using Azure OpenAI"""
     
     def __init__(self):
@@ -196,5 +196,5 @@ class TaigaAIAgent:
 
 if __name__ == "__main__":
     # Create and run the Taiga AI Agent
-    agent = TaigaAIAgent()
+    agent = RequirementAnalyzerAgent()
     agent.start_interactive_session()
