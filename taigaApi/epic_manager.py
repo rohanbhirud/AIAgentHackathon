@@ -1,29 +1,10 @@
 import requests
 
 class EpicManager:
-    """
-    Manages operations related to epics in Taiga
-    """
-    
     def __init__(self, taiga_api):
-        """
-        Initialize the Epic Manager
-        
-        Args:
-            taiga_api: Instance of TaigaAPI
-        """
         self.taiga = taiga_api
-    
+
     def get_epics(self, project_id):
-        """
-        Get all epics for a project
-        
-        Args:
-            project_id: Project ID
-            
-        Returns:
-            List of epics if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -44,15 +25,6 @@ class EpicManager:
             return None
     
     def get_epic(self, epic_id):
-        """
-        Get details for a specific epic
-        
-        Args:
-            epic_id: Epic ID
-            
-        Returns:
-            Epic data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -70,19 +42,6 @@ class EpicManager:
             return None
     
     def create_epic(self, project_id, subject, description=None, assigned_to=None, tags=None):
-        """
-        Create a new epic in a project
-        
-        Args:
-            project_id: Project ID
-            subject: Epic title/subject
-            description: Epic description (can be HTML)
-            assigned_to: User ID to assign the epic to
-            tags: List of tags
-            
-        Returns:
-            Epic data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -112,16 +71,6 @@ class EpicManager:
             return None
     
     def update_epic(self, epic_id, updates):
-        """
-        Update an existing epic
-        
-        Args:
-            epic_id: Epic ID
-            updates: Dictionary of fields to update (subject, description, etc.)
-            
-        Returns:
-            Updated epic data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -140,3 +89,18 @@ class EpicManager:
             if hasattr(e, 'response') and e.response is not None:
                 print(f"Response: {e.response.text}")
             return None
+
+    def delete_epic(self, epic_id):
+        if not self.taiga.auth_token:
+            if not self.taiga.authenticate():
+                return False
+
+        try:
+            url = f"{self.taiga.api_url}/epics/{epic_id}"
+            response = requests.delete(url, headers=self.taiga.get_headers())
+            response.raise_for_status()
+            print(f"\u2705 Deleted epic with ID {epic_id}")
+            return True
+        except Exception as e:
+            print(f"\u274c Failed to delete epic: {e}")
+            return False

@@ -94,37 +94,16 @@
                         "type": "string",
                         "description": "The title of the user story"
                     },
+                    "project_id": {
+                        "type": "string",
+                        "description": "Project ID to associate the user story with"
+                    },
                     "description": {
                         "type": "string",
                         "description": "Detailed description of the user story"
-                    },
-                    "epic_id": {
-                        "type": "string",
-                        "description": "Optional epic ID to link the story to"
                     }
                 },
-                "required": ["subject"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "update_user_story",
-            "description": "Update an existing user story",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "story_id": {
-                        "type": "string",
-                        "description": "The ID of the user story to update"
-                    },
-                    "updates": {
-                        "type": "object",
-                        "description": "Fields to update (subject, description, etc.)"
-                    }
-                },
-                "required": ["story_id", "updates"]
+                "required": ["subject","project_id"]
             }
         }
     },
@@ -217,6 +196,57 @@
                     }
                 },
                 "required": ["user_story_id", "epic_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "delete_epic",
+            "description": "Delete an epic by its ID",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "epic_id": {
+                        "type": "string",
+                        "description": "The ID of the epic to delete"
+                    }
+                },
+                "required": ["epic_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "delete_project",
+            "description": "Delete a project by its ID",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "project_id": {
+                        "type": "string",
+                        "description": "The ID of the project to delete"
+                    }
+                },
+                "required": ["project_id"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "delete_user_story",
+            "description": "Delete a user story by its ID",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "user_story_id": {
+                        "type": "string",
+                        "description": "The ID of the user story to delete"
+                    }
+                },
+                "required": ["user_story_id"]
             }
         }
     }

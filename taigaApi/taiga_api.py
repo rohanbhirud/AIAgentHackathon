@@ -9,21 +9,10 @@ class TaigaAPI:
     """Main class for interacting with the Taiga API"""
     
     def __init__(self, username=None, password=None):
-        """
-        Initialize the Taiga API client
-        
-        Args:
-            username: Taiga username (defaults to environment variable)
-            password: Taiga password (defaults to environment variable)
-        """
-        # Load API URL from environment
         self.api_url = os.getenv("TAIGA_API_URL", "http://localhost:8080/api/v1")
         
-        # Load credentials from parameters or environment
         self.username = username or os.getenv("TAIGA_USERNAME", "admin")
         self.password = password or os.getenv("TAIGA_PASSWORD", "adminpassword")
-        
-        # Authentication state
         self.auth_token = None
         self.refresh_token = None
         self.user_id = None
@@ -31,12 +20,6 @@ class TaigaAPI:
         print(f"✅ Taiga API client initialized with URL: {self.api_url}")
     
     def authenticate(self):
-        """
-        Authenticate with the Taiga API
-        
-        Returns:
-            Boolean indicating success
-        """
         try:
             url = f"{self.api_url}/auth"
             
@@ -68,12 +51,6 @@ class TaigaAPI:
             return False
     
     def refresh_authentication(self):
-        """
-        Refresh the authentication token
-        
-        Returns:
-            Boolean indicating success
-        """
         if not self.refresh_token:
             return self.authenticate()
         
@@ -100,28 +77,15 @@ class TaigaAPI:
                 
         except Exception as e:
             print(f"❌ Token refresh failed: {e}")
-            # Fall back to full authentication
             return self.authenticate()
     
     def get_headers(self):
-        """
-        Get headers for API requests
-        
-        Returns:
-            Dictionary of headers
-        """
         return {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.auth_token}" if self.auth_token else None
         }
     
     def get_user_info(self):
-        """
-        Get information about the authenticated user
-        
-        Returns:
-            User data if successful, None otherwise
-        """
         if not self.auth_token:
             if not self.authenticate():
                 return None

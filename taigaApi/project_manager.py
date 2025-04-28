@@ -1,30 +1,10 @@
 import requests
 
 class ProjectManager:
-    """
-    Manages operations related to projects in Taiga
-    """
-    
     def __init__(self, taiga_api):
-        """
-        Initialize the Project Manager
-        
-        Args:
-            taiga_api: Instance of TaigaAPI
-        """
         self.taiga = taiga_api
     
     def create_project(self, name, description):
-        """
-        Create a new project in Taiga
-        
-        Args:
-            name: Project name (required)
-            description: Project description (required)
-            
-        Returns:
-            Project data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -50,12 +30,6 @@ class ProjectManager:
             return None
     
     def get_projects(self):
-        """
-        Get all projects for the authenticated user
-        
-        Returns:
-            List of projects if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -73,15 +47,6 @@ class ProjectManager:
             return None
     
     def get_project(self, project_id):
-        """
-        Get details for a specific project
-        
-        Args:
-            project_id: Project ID
-            
-        Returns:
-            Project data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -97,3 +62,18 @@ class ProjectManager:
         except Exception as e:
             print(f"❌ Failed to get project details: {e}")
             return None
+
+    def delete_project(self, project_id):
+        if not self.taiga.auth_token:
+            if not self.taiga.authenticate():
+                return False
+
+        try:
+            url = f"{self.taiga.api_url}/projects/{project_id}"
+            response = requests.delete(url, headers=self.taiga.get_headers())
+            response.raise_for_status()
+            print(f"\u2705 Deleted project with ID {project_id}")
+            return True
+        except Exception as e:
+            print(f"\u274c Failed to delete project: {e}")
+            return False

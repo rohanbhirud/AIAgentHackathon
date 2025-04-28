@@ -2,30 +2,11 @@ from typing import List, Dict, Any, Optional
 import json
 
 class StoryGenerator:
-    """Generate user stories from epics using Azure OpenAI"""
-    
     def __init__(self, taiga_api, azure_ai_client):
-        """
-        Initialize the Story Generator
-        
-        Args:
-            taiga_api: Instance of TaigaAPI
-            azure_ai_client: Instance of AzureAIClient
-        """
         self.taiga = taiga_api
         self.ai_client = azure_ai_client
     
     def breakdown_epic_into_stories(self, project_id: Any, epic_id: Any) -> List[Dict[str, Any]]:
-        """
-        Analyze an epic's description and generate user stories with AI
-        
-        Args:
-            project_id: The ID of the project
-            epic_id: The ID of the epic to analyze
-            
-        Returns:
-            List of created user stories
-        """
         from taigaApi.epic_manager import EpicManager
         from taigaApi.user_story_manager import UserStoryManager
         

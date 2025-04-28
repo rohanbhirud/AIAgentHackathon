@@ -88,17 +88,15 @@ class TaigaAIAgent:
                     
                     # Call the appropriate function
                     function_response = None
-                    # print(f"Calling function: {function_name} with args: {function_args}")
+                    print(f"Calling function: {function_name} with args: {function_args}")
                     
                     if function_name == "list_epics":
-                        function_response = taiga_functions.list_epics(
-                            self.taiga_api, 
+                        function_response = taiga_functions.list_epics( 
                             self.epic_manager,
                             function_args.get("project_id")  
                         )
                     elif function_name == "create_epic":
                         function_response = taiga_functions.create_epic(
-                            self.taiga_api,
                             self.epic_manager,
                             function_args.get("subject"),
                             function_args.get("project_id"),
@@ -108,49 +106,49 @@ class TaigaAIAgent:
                         )
                     elif function_name == "update_epic":
                         function_response = taiga_functions.update_epic(
-                            self.taiga_api,
                             self.epic_manager,
                             function_args.get("epic_id"),
                             function_args.get("updates")
                         )
                     elif function_name == "list_user_stories":
                         function_response = taiga_functions.list_user_stories(
-                            self.taiga_api,
-                            self.user_story_manager,
-                            function_args.get("epic_id", None),  # Default to None if not provided
-                            function_args.get("project_id")  
+                            self.user_story_manager
                         )
                     elif function_name == "create_user_story":
                         function_response = taiga_functions.create_user_story(
-                            self.taiga_api,
                             self.user_story_manager,
                             function_args.get("subject"),
-                            function_args.get("description", ""),  # Default to empty string if not provided
-                            function_args.get("epic_id", None),  # Default to None if not provided
-                            function_args.get("project_id")  
+                            function_args.get("project_id") ,
+                            function_args.get("description", "")
+                            
                         )
-                    elif function_name == "update_user_story":
-                        function_response = taiga_functions.update_user_story(
-                            self.taiga_api,
+                    elif function_name == "delete_epic":
+                        function_response = taiga_functions.delete_epic(
+                            self.epic_manager,
+                            function_args.get("epic_id")
+                        )
+                    elif function_name == "delete_project":
+                        function_response = taiga_functions.delete_project(
+                            self.project_manager,
+                            function_args.get("project_id")
+                        )
+                    elif function_name == "delete_user_story":
+                        function_response = taiga_functions.delete_user_story(
                             self.user_story_manager,
-                            function_args.get("story_id"),
-                            function_args.get("updates")
+                            function_args.get("user_story_id")
                         )
                     # Project management functions
                     elif function_name == "list_projects":
                         function_response = taiga_functions.list_projects(
-                            self.taiga_api,
                             self.project_manager
                         )
                     elif function_name == "get_project":
                         function_response = taiga_functions.get_project(
-                            self.taiga_api,
                             self.project_manager,
                             function_args.get("project_id")
                         )
                     elif function_name == "create_project":
                         function_response = taiga_functions.create_project(
-                            self.taiga_api,
                             self.project_manager,
                             function_args.get("name"),
                             function_args.get("description", "")  # Default to empty string if not provided
@@ -158,14 +156,12 @@ class TaigaAIAgent:
                     # Story generation functions
                     elif function_name == "breakdown_epic":
                         function_response = taiga_functions.breakdown_epic(
-                            self.taiga_api,
                             self.story_generator,
-                            function_args.get("project_id"),  
-                            function_args.get("epic_id")
+                            function_args.get("epic_id"),  
+                            function_args.get("project_id")
                         )
                     elif function_name == "link_user_story_to_epic":
                         function_response = taiga_functions.link_user_story_to_epic(
-                            self.taiga_api,
                             self.user_story_manager,
                             function_args.get("user_story_id"),
                             function_args.get("epic_id")

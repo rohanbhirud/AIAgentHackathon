@@ -1,48 +1,19 @@
 import requests
 
 class UserStoryManager:
-    """
-    Manages operations related to user stories in Taiga
-    """
-    
     def __init__(self, taiga_api):
-        """
-        Initialize the User Story Manager
-        
-        Args:
-            taiga_api: Instance of TaigaAPI
-        """
         self.taiga = taiga_api
     
-    def get_user_stories(self, epic_id=None):
-        """
-        Get user stories for a project, optionally filtered by epic
-        
-        Args:
-            project_id: Project ID
-            epic_id: Epic ID (optional)
-            
-        Returns:
-            List of user stories if successful, None otherwise
-        """
+    def get_user_stories(self):
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
         
         try:
-            url = f"{self.taiga.api_url}/userstories"
-            
-            if epic_id:
-                url = f"{url}&epic={epic_id}"
-                
+            url = f"{self.taiga.api_url}/userstories"  
             response = requests.get(url, headers=self.taiga.get_headers())
             response.raise_for_status()
             stories = response.json()
-            
-            if epic_id:
-                print(f"✅ Found {len(stories)} user stories for epic ID {epic_id}")
-            else:
-                print(f"✅ Found {len(stories)} user stories for project ID {project_id}")
                 
             return stories
             
@@ -50,24 +21,8 @@ class UserStoryManager:
             print(f"❌ Failed to get user stories: {e}")
             return None
     
-    def create_user_story(self, subject, description=None, epic_id=None, 
+    def create_user_story(self, subject, project_id, description=None,
                           assigned_to=None, tags=None, status=None, points=None):
-        """
-        Create a new user story in a project
-        
-        Args:
-            project_id: Project ID
-            subject: Story title/subject
-            description: Story description (can be HTML)
-            epic_id: Epic ID to link the story to
-            assigned_to: User ID to assign the story to
-            tags: List of tags
-            status: Status ID
-            points: Dictionary of role-points values
-            
-        Returns:
-            User story data if successful, None otherwise
-        """
         if not self.taiga.auth_token:
             if not self.taiga.authenticate():
                 return None
@@ -80,9 +35,6 @@ class UserStoryManager:
                 "subject": subject,
                 "description": description or ""
             }
-            
-            if epic_id:
-                payload["epics"] = [{"id": epic_id}]
             
             if assigned_to:
                 payload["assigned_to"] = assigned_to
@@ -141,4 +93,28 @@ class UserStoryManager:
             print(f"❌ Failed to link user story to epic: {e}")
             if hasattr(e, 'response') and e.response is not None:
                 print(f"Response: {e.response.text}")
+            return False
+
+    def delete_user_story(self, user_story_id):
+        """
+        Delete a user story by its ID
+
+        Args:
+            user_story_id: User story ID
+
+        Returns:
+            Boolean indicating success
+        """
+        if not self.taiga.auth_token:
+            if not self.taiga.authenticate():
+                return False
+
+        try:
+            url = f"{self.taiga.api_url}/userstories/{user_story_id}"
+            response = requests.delete(url, headers=self.taiga.get_headers())
+            response.raise_for_status()
+            print(f"\u2705 Deleted user story with ID {user_story_id}")
+            return True
+        except Exception as e:
+            print(f"\u274c Failed to delete user story: {e}")
             return False
