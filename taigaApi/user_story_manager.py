@@ -53,7 +53,7 @@ class UserStoryManager:
             response = requests.post(url, headers=self.taiga.get_headers(), json=payload)
             response.raise_for_status()
             story = response.json()
-            print(f"✅ Created user story '{subject}'")
+            # print(f"✅ Created user story '{subject}'")
             return story
             
         except Exception as e:
@@ -88,7 +88,7 @@ class UserStoryManager:
             
             response = requests.post(url, headers=self.taiga.get_headers(), json=payload)
             response.raise_for_status()
-            print(f"✅ Linked user story {user_story_id} to epic {epic_id}")
+            # print(f"✅ Linked user story {user_story_id} to epic {epic_id}")
             return True
             
         except Exception as e:

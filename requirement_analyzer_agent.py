@@ -59,8 +59,11 @@ class RequirementAnalyzerAgent:
         if not self.ai_client.client:
             return "Error: Azure OpenAI client is not initialized properly."
         
-        # Initial message history
-        messages = [{"role": "user", "content": user_input}]
+        # Initial message history with system message for formatting instructions
+        messages = [
+            {"role": "system", "content": "When responding with lists of items such as user stories or requirements, please format them properly for display in a web interface. Use markdown formatting where appropriate: use numbered lists for sequential items, use bold for important terms (especially in user stories like 'As a user'), and separate distinct sections with line breaks. When showing user stories, maintain the format '1. **As a [user type]**, I want to [action] so that [benefit].'"},
+            {"role": "user", "content": user_input}
+        ]
         
         # Continue the conversation until all tool calls are processed
         while True:

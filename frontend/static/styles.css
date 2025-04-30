@@ -1,0 +1,50 @@
+/* Main chatbot styles */
+.chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.suggestion-chip {
+    background-color: #e0f0ff;
+    border: 1px solid #cce5ff;
+    color: #3498db;
+    border-radius: 16px;
+    padding: 5px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.suggestion-chip:hover {
+    background-color: #d0e5ff;
+    border-color: #3498db;
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* System message styles */
+.system-message .message-content {
+    background-color: #fdf6e3 !important;
+    color: #657b83 !important;
+    font-style: italic;
+    border: 1px dashed #ccc;
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

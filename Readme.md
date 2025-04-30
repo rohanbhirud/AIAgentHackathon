@@ -36,6 +36,12 @@ To start the agent(It will start in terminal):
 python requirement_analyzer_agent.py
 ```
 
+To start the agent(It will start in Web UI):
+
+```bash
+python frontend/app.py
+```
+
 ## Stopping the Application
 
 To stop the application:
