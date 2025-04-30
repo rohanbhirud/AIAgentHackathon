@@ -42,6 +42,14 @@ To start the agent(It will start in Web UI):
 python frontend/app.py
 ```
 
+## Demo
+
+[Watch the demo video](demo_video/Requirement_Analyzer_AI_Agent_Demo.mp4)
+
+<video width="640" height="360" controls>
+  <source src="demo_video/Requirement_Analyzer_AI_Agent_Demo.mp4" type="video/mp4">
+</video>
+
 ## Stopping the Application
 
 To stop the application:
