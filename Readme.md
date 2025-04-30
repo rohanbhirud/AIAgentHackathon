@@ -36,7 +36,7 @@ To start the agent(It will start in terminal):
 python requirement_analyzer_agent.py
 ```
 
-To start the agent(It will start in Web UI):
+To start the agent(It will start in Web UI at : http://127.0.0.1:5000/):
 
 ```bash
 python frontend/app.py
